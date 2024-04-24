@@ -4,9 +4,23 @@
 #include <cstring>
 using namespace std;
 
-class Passenger
+class services
 {
-    protected:
+    string food;
+    string health;
+    public:
+        services(){}
+
+        services(string x, string y)
+        {
+            food = x;
+            health = y;
+        }
+};
+
+class Passenger : public services
+{
+    public:
         string id;
         string password;
         string p_name;
@@ -16,6 +30,7 @@ class Passenger
         string to;
         string classes;
         int rating;
+        string ticket_no;
 
     public:
         Passenger(){}
@@ -32,6 +47,11 @@ class Passenger
             classes = h;
         }
 
+        void service(string f, string h)
+        {
+            services(f,h);
+        }
+
         Passenger(Passenger &obj)
         {
             id = obj.id;
@@ -42,6 +62,7 @@ class Passenger
             from = obj.from;
             to = obj.to;
             classes = obj.classes;
+            ticket_no = obj.ticket_no;
         }
 
         void display_all_passenger_of_flight(vector <Passenger> obj,string p_name,string to,string from)
@@ -135,14 +156,17 @@ class Passenger
             cout<<"\nThank you...See you soon next time :)";
             cout<<"\n";
         }
+
+        friend void view_ticket(Flight,Passenger);
+        friend void assign_ticket_no(string);
 };
 
-class bag:public Passenger
+class baggage:public Passenger
 {
     int num;
     float *weight;
     public:
-    bag(int c,float *d)
+    baggage(int c,float *d)
     {
         num=c;
         if(num<=0)
@@ -238,6 +262,7 @@ class ticket
 {
     int seat_no[26][7];/*assuming there are 7 column_cs represented by letters and 
                     26 rows represented by no.s => seat no. is like A16*/
+    string ticket_no = " ";
     public:
         ticket()
         {
@@ -252,6 +277,8 @@ class ticket
                 for(int j = 0;j<7;j++)
                     seat_no[i][j] = obj.seat_no[i][j];
         }
+
+        friend void assign_ticket_no(string);
 
         void seat_matrix_gen()
         {
@@ -323,6 +350,10 @@ class ticket
                     {    
                         seat_no[column][row];  
                         cout<<"Seat successfully booked\n";
+                        to_string(row);
+                        to_string(column_char);
+                        column_char = column_char + row;
+                        assign_ticket_no(column_char);
                     }
                     else if(opt1 == 'N')
                         throw opt1;
@@ -351,17 +382,6 @@ struct timing
     int seconds;
 };
 
-class services
-{
-    string food;
-    string health;
-    public:
-        services(string x, string y)
-        {
-            food = x;
-            health = y;
-        }
-};
 
 class Flight: public Passenger,public ticket
 {
@@ -455,6 +475,8 @@ class Flight: public Passenger,public ticket
                             update_travelDet(obj[i]);
                         else if(flag == 3)
                             display(obj[i]);
+                        else if(flag == 4)
+                            book_ticket();
                         break;
                     }
                 }
@@ -529,17 +551,27 @@ class Flight: public Passenger,public ticket
             cout<<"The flight is from "<<obj.from<<" to "<<obj.to<<endl;   
         }
 
-        void view_ticket()
-        {
-            cout<<f_name<<endl;
-            cout<<"\t\t\tFlight : "<<no;
-            cout<<"\nName : "<<p_name;
-            cout<<"\tAge : "<<age;
-            cout<<"\tClass : "<<classes;
-            cout<<"\nDeparture Time : "<<obj.dept_timing.hours<<obj.dept_timing.minutes<<obj.dept_timing.seconds<<endl;
-            cout<<"\t\tDeparture Date :"<<obj.dept_date.day<<obj.dept_date.month<<obj.dept_date.year<<endl;
-        }
+        friend void view_ticket(Flight,Passenger);
+
+        friend void assign_ticket_no(string);
 };
+
+void view_ticket(Flight obj1,Passenger obj2)
+    {
+        cout<<"------------- TICKET -------------\n";
+        cout<<obj1.f_name<<endl;
+        cout<<"\t\t\tFlight : "<<obj1.no;
+        cout<<"\nName : "<<obj2.p_name;
+        cout<<"\tAge : "<<obj2.age;
+        cout<<"\tClass : "<<obj2.classes;
+        cout<<"\nDeparture Time : "<<obj1.dept_timing.hours<<obj1.dept_timing.minutes<<obj1.dept_timing.seconds<<endl;
+        cout<<"\t\tDeparture Date :"<<obj1.dept_date.day<<obj1.dept_date.month<<obj1.dept_date.year<<endl;
+    }
+
+void assign_ticket_no(string x)
+    {
+        ticket_no = ticket_no + x + no;
+    }
 
 class Staff
 {
@@ -737,7 +769,30 @@ int main()
     while (opt2 != 0)
         {
             cout<<"Which task do you wish to perform ??\n";
+            cout<<"1. Book ticket\n";
+            cout<<"2. View your ticket\n";
+            cout<<"3. Avail the services\n";
+            cout<<"4. Add Baggage and check price\n";
+            cout<<"5. Rate the flight\n";
+            cin>>opt2;
+            switch(opt2)
+            {
+                case 1:
+                    
+                    break;
+                case 2:
+                    
+                    break;
+                case 3:
+                    
+                    break;
+                case 4:
+                    
+                    break;
+                case 5:
 
+                    break;
+            }
         }
         
     }
