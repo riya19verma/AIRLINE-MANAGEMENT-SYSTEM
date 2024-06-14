@@ -1,108 +1,94 @@
 #include <iostream>
+#include <cstring>
 #include <cstdlib>
 #include <vector>
-#include <cstring>
+#include <fstream>
 using namespace std;
 
-class services
+class Passenger
 {
-    string food;
-    string health;
-    public:
-        services(){}
+    string id;
+    string password;
+    string p_name;
+    int age;
+    string flight_no;
+    string flight_name;
+    string from;
+    string to;
+    string classes;
+    int rating;
+    string ticket_no;
 
-        services(string x, string y)
+    public: 
+
+    static int p_count;
+
+        void setter()
         {
-            food = x;
-            health = y;
-        }
-};
-
-class Passenger : public services
-{
-    public:
-        string id;
-        string password;
-        string p_name;
-        int age;
-        string flight_name;
-        string from;
-        string to;
-        string classes;
-        int rating;
-        string ticket_no;
-
-    public:
-        Passenger(){}
-
-        Passenger(string a,string b,string c, int d, string e, string f, string g, string h)
-        {
-            id = a;
-            password = b;
-            p_name = c;
-            age = d;
-            flight_name = e;
-            from = f;
-            to = g;
-            classes = h;
+            cout<<"Enter the details of Passenger :\n ";
+            cout<<" Login Id : ";
+            cin>>id;
+            cout<<" Password : ";
+            cin>>password;
+            cout<<" Name : ";
+            cin>>p_name;
+            cout<<" Age : ";
+            cin>>age;
+            flight_no;
+            flight_name = " ";
+            from = " ";
+            to = " ";
+            classes = " ";
+            rating = 0;
+            ticket_no = " ";
         }
 
-        void service(string f, string h)
+        Passenger* search_pass(vector <Passenger> &obj)
         {
-            services(f,h);
+            //Take data from the file
+            string i,p;
+            int flag = 0;
+            cout<<"Enter the following :\n";
+            cout<<"Id : ";
+            cin>>i;
+            cout<<"Password : ";
+            cin>>p;
+            for(int j = 0;j<p_count;j++)
+            {
+                if(obj[j].id == i && obj[j].password == p)
+                { 
+                    obj[j].display(); 
+                    return &obj[j];
+                }
+                else
+                {
+                    flag = 1;
+                }
+                if(flag == 1)
+                {
+                    throw "Passenger not found !!\n";
+                } 
+            }
         }
 
-        Passenger(Passenger &obj)
-        {
-            id = obj.id;
-            password = obj.password;
-            p_name = obj.p_name;
-            age = obj.age;
-            flight_name = obj.flight_name;
-            from = obj.from;
-            to = obj.to;
-            classes = obj.classes;
-            ticket_no = obj.ticket_no;
+        void choose_flight(Passenger* ptr, string n, string f, string t,string no)
+        {  
+            ptr->flight_name = n;
+            ptr->from = f;
+            ptr->to = t;
+            ptr->flight_no = no;
         }
 
         void display_all_passenger_of_flight(vector <Passenger> obj,string p_name,string to,string from)
         {
-            if(obj.size()==0)
-                cout<<"No passengers found\n";
-            else
-            {    
-                for(int i = 0;i<obj.size();i++)
-                {
-                    if((p_name == obj[i].flight_name) && (to == obj[i].to) && (from == obj[i].from))
-                    {    
-                        cout<<"--------------Passenger : "<<i+1<<"--------------"<<endl;
-                        cout<<"Name : "<<obj[i].p_name<<endl;
-                        cout<<"Age : "<<obj[i].age<<endl;
-                        cout<<"Flight p_name : "<<obj[i].flight_name<<endl;
-                        cout<<"The passenger has chosen a flight from "<<obj[i].from;
-                        cout<<" to "<<obj[i].to<<endl;
-                        cout<<"Class : "<<obj[i].classes<<endl;
-                        cout<<"The ratings given by the passenger : ";
-                        for(int i=0;i<obj[i].rating;i++)
-                            cout<<"* ";
-                        cout<<endl;
-                    }
-                }
-            }
-        }
-
-        void display_all_passenger(vector <Passenger> obj)
-        {
-            if(obj.size()==0)
-                cout<<"No passenger found\n";
-            else
-            {    
-                for(int i = 0;i<obj.size();i++)
-                {
+            for(int i = 0;i<p_count;i++)
+            {
+                if((p_name == obj[i].flight_name) && (to == obj[i].to) && (from == obj[i].from))
+                {    
                     cout<<"--------------Passenger : "<<i+1<<"--------------"<<endl;
                     cout<<"Name : "<<obj[i].p_name<<endl;
                     cout<<"Age : "<<obj[i].age<<endl;
-                    cout<<"Flight p_name : "<<obj[i].flight_name<<endl;
+                    cout<<"Flight name : "<<obj[i].flight_name<<endl;
                     cout<<"The passenger has chosen a flight from "<<obj[i].from;
                     cout<<" to "<<obj[i].to<<endl;
                     cout<<"Class : "<<obj[i].classes<<endl;
@@ -114,11 +100,29 @@ class Passenger : public services
             }
         }
 
-        void display()
+        void display_all_passenger(vector <Passenger> obj)
+        {
+            for(int i = 0;i<p_count;i++)
+            { 
+                cout<<"--------------Passenger : "<<i+1<<"--------------"<<endl;
+                cout<<"Name : "<<obj[i].p_name<<endl;
+                cout<<"Age : "<<obj[i].age<<endl;
+                cout<<"Flight name : "<<obj[i].flight_name<<endl;
+                cout<<"The passenger has chosen a flight from "<<obj[i].from;
+                cout<<" to "<<obj[i].to<<endl;
+                cout<<"Class : "<<obj[i].classes<<endl;
+                cout<<"The ratings given by the passenger : ";
+                for(int i=0;i<obj[i].rating;i++)
+                    cout<<"* ";
+                cout<<endl;
+            }
+        }
+
+    void display()
         {
             cout<<"Name : "<<p_name<<endl;
             cout<<"Age : "<<age<<endl;
-            cout<<"PNR no. : "<<flight_name<<endl;
+            cout<<"Flight name : "<<flight_name<<endl;
             cout<<"The passenger has chosen a flight from "<<from<<" to "<<to<<endl;
             cout<<"Class : "<<classes<<endl;
             cout<<"The ratings given by the passenger : ";
@@ -127,38 +131,21 @@ class Passenger : public services
             cout<<endl;
         }
 
-        Passenger search_passenger(string id,vector <Passenger> obj,int flag)
-        {
-            //File Handling : Take data from file
-            if(obj.size()==0)
-                cout<<"No passengers foun!!\n";
-            else
-            {    
-                for(int i = 0;i<obj.size();i++)
-                {
-                    if(obj[i].id==id)
-                    {
-                        
-                        cout<<"Details of this passenger :\n";
-                        obj[i].display();
-                        return obj[i];
-                    }
-                }
-            }
-        }
-        
-        void rate_this_flight()
-        {     
-            cout<<"How many stars do you want to give to this flight?\n";
-            cin>>rating;
-            for(int i = 0;i<rating;i++)
-                cout<<"* ";
-            cout<<"\nThank you...See you soon next time :)";
-            cout<<"\n";
-        }
+}; 
+int Passenger :: p_count = 0;
 
-        friend void view_ticket(Flight,Passenger);
-        friend void assign_ticket_no(string);
+struct date
+{
+    int day;
+    int month;
+    int year;    
+};
+
+struct timing
+{
+    int hours;
+    int minutes;
+    int seconds;
 };
 
 class baggage:public Passenger
@@ -258,13 +245,147 @@ class baggage:public Passenger
     }
 };
 
-class ticket 
+class Flight 
 {
+    protected:
+    string f_name;
+    date dept_date;
+    timing dept_timing;
+    date arr_date;
+    timing arr_timing;
+    string from;
+    string to;
+
+    public:
+
     int seat_no[26][7];/*assuming there are 7 column_cs represented by letters and 
                     26 rows represented by no.s => seat no. is like A16*/
+    string flight_no;
+    
+    static int f_count;
+
+    void setter()
+    {
+        cout<<"Enter the details flight :\n";
+        cout<<"Flight name : ";
+        cin>>f_name;
+        cout<<"Flight no : ";
+        cin>>flight_no;
+        cout<<"Departure from : ";
+        cin>>from;
+        cout<<"Date of Departure (DD / MM / YY) : ";
+        cin>>dept_date.day;
+        if(dept_date.day > 31 || dept_date.day < 0)
+            throw "Invalid day entered \n";
+        cout<<" / ";
+        cin>>dept_date.month;
+        if(dept_date.month > 12 || dept_date.day < 0)
+            throw "Invalid month entered \n";
+        cout<<" / ";
+        cin>>dept_date.year;
+        if(dept_date.year > 30 || dept_date.day < 24)
+            throw "Invalid year entered \n";
+        cout<<"Time of Departure (hh : mm : ss)<24hrClock>: ";
+        cin>>dept_timing.hours;
+        if(dept_timing.hours > 24 || dept_timing.hours < 0)
+            throw "Invalid time entered \n";
+        cout<<" : ";
+        cin>>dept_timing.minutes;
+        if(dept_timing.minutes > 60 || dept_timing.minutes < 0)
+            throw "Invalid time entered \n";
+        cout<<" : ";
+        cin>>dept_timing.seconds;
+        if(dept_timing.seconds > 60 || dept_timing.seconds < 0)
+            throw "Invalid time entered \n";
+        
+        cout<<"Destination : ";
+        cin>>to;
+        cout<<"Date of Arrival (DD / MM / YY) : ";
+        cin>>arr_date.day;
+        if(arr_date.day > 31 || arr_date.day < 0)
+            throw "Invalid day entered \n";
+        cout<<" / ";
+        cin>>arr_date.month;
+        if(arr_date.month > 12 || arr_date.day < 0)
+            throw "Invalid month entered \n";
+        cout<<" / ";
+        cin>>arr_date.year;
+        if(arr_date.year > 30 || arr_date.day < 24)
+            throw "Invalid year entered \n";
+        cout<<"Time of Departure (hh : mm : ss)<24hrClock>: ";
+        cin>>arr_timing.hours;
+        if(arr_timing.hours > 24 || arr_timing.hours < 0)
+            throw "Invalid time entered \n";
+        cout<<" : ";
+        cin>>arr_timing.minutes;
+        if(arr_timing.minutes > 60 || arr_timing.minutes < 0)
+            throw "Invalid time entered \n";
+        cout<<" : ";
+        cin>>arr_timing.seconds;
+        if(arr_timing.seconds > 60 || arr_timing.seconds < 0)
+            throw "Invalid time entered \n";
+        cout<<"Details successully added !!\n\n";
+    }
+
+    void display_all_flight(vector<Flight> obj)
+    {
+        for(int i = 0;i<obj.size();i++)
+        {
+            cout<<"------------Flight : "<<i+1<<"------------\n";
+            cout<<"Name : "<<obj[i].f_name<<endl;
+            cout<<"Number : "<<obj[i].flight_no<<endl;
+            cout<<"Capacity : 182"<<endl;
+            cout<<"Departure Date : "<<obj[i].dept_date.day<<obj[i].dept_date.month<<obj[i].dept_date.year<<endl;
+            cout<<"Departure Time : "<<obj[i].dept_timing.hours<<obj[i].dept_timing.minutes<<obj[i].dept_timing.seconds<<endl;
+            cout<<"Arrival Date : "<<obj[i].arr_date.day<<obj[i].arr_date.month<<obj[i].arr_date.year<<endl;
+            cout<<"Arrival Time : "<<obj[i].arr_timing.hours<<obj[i].arr_timing.minutes<<obj[i].arr_timing.seconds<<endl;
+            cout<<"The flight is from "<<obj[i].from<<" to "<<obj[i].to<<endl;
+        }
+        cout<<"\n";
+    }
+
+    void display_all_flight_options()
+    {
+        cout<<"1. SpiceJet : from Delhi to Dhaka\n";
+        cout<<"2. SpiceJet : from Delhi to Sydney\n";
+        cout<<"3. IndiGo : from Delhi to Kathmandu\n";
+        cout<<"4. IndiGo : from Delhi to Doha\n";
+        cout<<"5. Vistara : from Delhi to Lucknow\n";
+        cout<<"6. Vistara : from Delhi to Bombay\n";
+    }
+    
+    Flight* search_fly(vector <Flight> &obj,string no)
+        {
+            //Take data from the file
+            int flag = 0;
+            for(int j = 0;j<f_count;j++)
+            {
+                if(obj[j].flight_no == no)
+                {  
+                    return &obj[j];
+                }
+                else
+                {
+                    flag = 1;
+                } 
+            }
+            if(flag == 1)
+            {
+                throw "Flight not found !!\n";
+            }
+        }
+};
+int Flight :: f_count = 0;
+
+class ticket : public Flight,public Passenger
+{
     string ticket_no = " ";
+    string r;
     public:
-        ticket()
+        string seat;
+
+        ticket(){}
+        void built_ticket(int seat_no[26][7])
         {
             for(int i = 0;i<26;i++)
                 for(int j = 0;j<7;j++)
@@ -277,16 +398,14 @@ class ticket
                 for(int j = 0;j<7;j++)
                     seat_no[i][j] = obj.seat_no[i][j];
         }
-
-        friend void assign_ticket_no(string);
-
-        void seat_matrix_gen()
+        
+        void seat_matrix_gen(int seat_no[26][7])
         {
             cout<<"--------- SEAT MATRIX ---------\n";
-            cout<<"    A  B  C\tD  E  F  G";
+            cout<<"    A  B  C\tD  E  F  G\n";
             for(int i = 0;i<26;i++)
             {   
-                cout<<i<<"  ";
+                cout<<i+1<<"  ";
                 for(int j = 0;j<7;j++)
                 {    
                     cout<<seat_no[i][j];
@@ -298,502 +417,367 @@ class ticket
                 cout<<"\n";
             }
         }
-        void updateSeatMatrix_file()
-        {
-            //File handling : to updated seat details in file
-        }
-        void book_ticket()
-        {
-            
-            this->seat_matrix_gen();
+
+        void book_ticket(Flight* obj)
+        {  
+            built_ticket(obj->seat_no);          
+            seat_matrix_gen(obj->seat_no);
             cout<<"How many seats do you want ? ";
             int n;
             cin>>n;
             for(int i = 0;i<n;i++)
             {
-                char column_char;
-                int row;
-                cout<<"Choose the seat no "<<i<<" you want to book : (eg: A 16)";
-                cin>>column_char>>row;
+                seat = " ";
+                char row_char;
                 int column;
-                switch(column_char)
+                cout<<"Choose the seat no "<<i+1<<" you want to book : (eg: A 16)";
+                cin>>row_char>>column;
+                int row;
+                switch(row_char)
                 {
                     case 'A':
-                        column = 0;
+                        row = 0;
                         break;
                     case 'B':
-                        column = 1;
+                        row = 1;
                         break;
                     case 'C':
-                        column = 2;
+                        row = 2;
                         break;
                     case 'D':
-                        column = 3;
+                        row = 3;
                         break;
                     case 'E':
-                        column = 4;
+                        row = 4;
                         break;
                     case 'F':
-                        column = 5;
+                        row = 5;
                         break;
                     case 'G':
-                        column = 6;
+                        row = 6;
                         break;
                 }
-                if(seat_no[column][row])
-                    throw 1;
+                if(obj->seat_no[column][row])
+                {
+                    cout<<"Enter another seat....this is already booked\n";
+                    i--;
+                }
                 else  
                 {
                     cout<<"Do you want me to confirm this seat ? (Y/N) ";
                     char opt1;
+                    cin>>opt1;
                     if(opt1 == 'Y')
                     {    
-                        seat_no[column][row];  
-                        cout<<"Seat successfully booked\n";
-                        to_string(row);
-                        to_string(column_char);
-                        column_char = column_char + row;
-                        assign_ticket_no(column_char);
+                        obj->seat_no[column][row] = 1;  
+                        r = to_string(column);
+                        seat += row_char;
+                        seat += r;
+                        cout<<"Seat "<<seat<<" is successfully booked\n";
+                        assign_ticketNo(seat,obj->flight_no);
                     }
                     else if(opt1 == 'N')
-                        throw opt1;
+                    {
+                        cout<<"Ok then enter another seat\n";
+                        i--;
+                    }
                     else    
                         throw "Invalid input\n";
                 } 
             }
-            system("cls");
             cout<<"Updated seat matrix :\n";
-            this->seat_matrix_gen();
+            seat_matrix_gen(obj->seat_no);
+        }
+
+        void assign_ticketNo(string s, string fn)
+        {
+            ticket_no += s;
+            ticket_no += fn;
         }
 
 };
-
-struct date
-{
-    int day;
-    string month;
-    int year;    
-};
-
-struct timing
-{
-    int hours;
-    int minutes;
-    int seconds;
-};
-
-
-class Flight: public Passenger,public ticket
-{
-    string f_name;
-    string no;
-    date dept_date;
-    timing dept_timing;
-    date arr_date;
-    timing arr_timing;
-    string from;
-    string to;
-
-    public:
-        Flight(){}
-        Flight(string a, int c, string d, int e, int f, int g, int h, int i, string j, int k, int l, int m, int n, string o, string p,string q)
-         {
-            no = a;
-            f_name = q;
-            dept_date.day = c;
-            dept_date.month = d;
-            dept_date.year = e;
-            dept_timing.hours = f;
-            dept_timing.minutes = g;
-            dept_timing.seconds = h;
-            arr_date.day = i;
-            arr_date.month = j;
-            arr_date.year = k;
-            arr_timing.hours = l;
-            arr_timing.minutes = m;
-            arr_timing.seconds = n;
-            from = o;
-            to = p;
-         }
-
-        Flight(Flight &obj)
-        {
-            f_name = obj.f_name;
-            no = obj.no;
-            dept_date.day = obj.dept_date.day;
-            dept_date.month = obj.dept_date.month;
-            dept_date.year = obj.dept_date.year;
-            dept_timing.hours = obj.dept_timing.hours;
-            dept_timing.minutes = obj.dept_timing.minutes;
-            dept_timing.seconds = obj.dept_timing.seconds;
-            arr_date.day = obj.arr_date.day;
-            arr_date.month = obj.arr_date.month;
-            arr_date.year = obj.arr_date.year;
-            arr_timing.hours = obj.arr_timing.hours;
-            arr_timing.minutes = arr_timing.minutes;
-            arr_timing.seconds = arr_timing.seconds;
-            from = obj.from;
-            to = obj.to;
-        }
-         
-        void addSeatMatrix_file()
-        {
-            //File handling : to add new seat details in new file
-        }
-
-        float calc_avg_rating(const vector <Passenger> obj)
-        {
-            int sum;
-            for(int i = 0;i<182;i++)
-                sum = sum + rating;
-            float avg = sum/182;
-            return avg;
-        }
-        void addRating_file(const vector <Passenger> obj)
-        {
-            int rate = calc_avg_rating(obj);
-            //File handling : update ratings to flight file
-        }
-
-        Flight &search_flight(vector<Flight> &obj,int flag)
-        {
-            //File Handling : Take data from file
-            if(obj.size()==0)
-                cout<<"No flights found!!\n";
-            else
-            {    
-                cout<<"Enter the flight no. : ";
-                string no;
-                cin>>no;
-                for(int i = 0;i<obj.size();i++)
-                {
-                    if(obj[i].no == no)
-                    {
-                        if(flag==1)
-                            update_ArrDep(obj[i]);
-                        else if(flag == 2)
-                            update_travelDet(obj[i]);
-                        else if(flag == 3)
-                            display(obj[i]);
-                        else if(flag == 4)
-                            book_ticket();
-                        break;
-                    }
-                }
-                return obj[0];
-            }
-        }
-
-        void update_travelDet(Flight &obj)
-        //flag=2
-        {
-            cout<<"Flight is travelling from ?? ";
-            cin>>from;
-            cout<<"Flight is going to ?? ";
-            cin>>to;
-        }
-
-        void update_ArrDep(Flight &obj)
-        //flag = 1
-        {
-            cout<<"Enter the new arrival date : ";
-            cin>>obj.arr_date.day>>obj.arr_date.month>>obj.arr_date.year;
-            cout<<"Enter the new arrival time : ";
-            cin>>obj.arr_timing.hours>>obj.arr_timing.minutes>>obj.arr_timing.seconds;
-            cout<<"Enter the new departure date : ";
-            cin>>obj.dept_date.day>>obj.dept_date.month>>obj.dept_date.year;
-            cout<<"Enter the new departure time : ";
-            cin>>obj.dept_timing.hours>>obj.dept_timing.minutes>>obj.dept_timing.seconds;
-            cout<<"Details successfully updated\n";
-        }
-
-        void update_details_to_file()
-        {
-            //File Handling
-        }
-
-        void update_arr_dep_details_to_file()
-        {
-            //File Handling
-        }
-
-        void add_details_of_new_flight_to_file()
-        {
-            //File handling
-        }
-
-        void display_all_flight(vector<Flight> obj)
-        {
-            for(int i = 0;i<obj.size();i++)
-            {
-                cout<<"------------Flight : "<<i+1<<"------------\n";
-                cout<<"Name : "<<obj[i].f_name<<endl;
-                cout<<"Number : "<<obj[i].no<<endl;
-                cout<<"Capacity : 182"<<endl;
-                cout<<"Departure Date : "<<obj[i].dept_date.day<<obj[i].dept_date.month<<obj[i].dept_date.year<<endl;
-                cout<<"Departure Time : "<<obj[i].dept_timing.hours<<obj[i].dept_timing.minutes<<obj[i].dept_timing.seconds<<endl;
-                cout<<"Arrival Date : "<<obj[i].arr_date.day<<obj[i].arr_date.month<<obj[i].arr_date.year<<endl;
-                cout<<"Arrival Time : "<<obj[i].arr_timing.hours<<obj[i].arr_timing.minutes<<obj[i].arr_timing.seconds<<endl;
-                cout<<"The flight is from "<<obj[i].from<<" to "<<obj[i].to<<endl;
-            }
-        }
-
-        void display(Flight obj)
-        //flag = 3
-        {
-            cout<<"Name : "<<obj.f_name<<endl;
-            cout<<"Number : "<<obj.no<<endl;
-            cout<<"Capacity : 182"<<endl;
-            cout<<"Departure Date : "<<obj.dept_date.day<<obj.dept_date.month<<obj.dept_date.year<<endl;
-            cout<<"Departure Time : "<<obj.dept_timing.hours<<obj.dept_timing.minutes<<obj.dept_timing.seconds<<endl;
-            cout<<"Arrival Date : "<<obj.arr_date.day<<obj.arr_date.month<<obj.arr_date.year<<endl;
-            cout<<"Arrival Time : "<<obj.arr_timing.hours<<obj.arr_timing.minutes<<obj.arr_timing.seconds<<endl;
-            cout<<"The flight is from "<<obj.from<<" to "<<obj.to<<endl;   
-        }
-
-        friend void view_ticket(Flight,Passenger);
-
-        friend void assign_ticket_no(string);
-};
-
-void view_ticket(Flight obj1,Passenger obj2)
-    {
-        cout<<"------------- TICKET -------------\n";
-        cout<<obj1.f_name<<endl;
-        cout<<"\t\t\tFlight : "<<obj1.no;
-        cout<<"\nName : "<<obj2.p_name;
-        cout<<"\tAge : "<<obj2.age;
-        cout<<"\tClass : "<<obj2.classes;
-        cout<<"\nDeparture Time : "<<obj1.dept_timing.hours<<obj1.dept_timing.minutes<<obj1.dept_timing.seconds<<endl;
-        cout<<"\t\tDeparture Date :"<<obj1.dept_date.day<<obj1.dept_date.month<<obj1.dept_date.year<<endl;
-    }
-
-void assign_ticket_no(string x)
-    {
-        ticket_no = ticket_no + x + no;
-    }
 
 class Staff
 {
-    string id;
-    string password;
-    string p_name;
+    string s_name;
     string job;
-    int salary;
 
     public:
-        Staff(){}
-
-        Staff(string a, string b, string c, string d, int e)
-        {
-            id = a;
-            password = b;
-            p_name = c;
-            job = d;
-            salary = e;
-        }
-        
-        Staff(Staff &obj)
-        {
-            id = obj.id;
-            password = obj.password;
-            p_name = obj.p_name;
-            job = obj.p_name;
-            salary = obj.salary;
-        }
-
-        void display()
-        {
-            cout<<"Name : "<<p_name<<endl;
-            cout<<"Job : "<<job<<endl;
-            cout<<"Salary : "<<salary<<endl;
-        }
-
-        void search_staff(string id,vector <Staff> obj)
-        {
-            //File Handling : Take data from file
-            if(obj.size()==0)
-                cout<<"No Staff Found!!\n";
-            else
-            {    
-                for(int i = 0;i<obj.size();i++)
-                {
-                    if(obj[i].id==id)
-                    {
-                        obj[i].display();
-                    }
-                }
-            }
-        }
-};
-
-
-int main()
-{
-    int opt1,opt2=-1,opt3,opt4;
     string id;
-    Passenger pass;
-    Flight fly;
-    Staff st;
-    vector <Passenger> p_obj;
-    vector <Flight> f_obj;
-    vector <Staff> s_obj;
+    string password;
+    static int s_count;
 
-    //screen 1
-    cout<<"----------------------*******  WELCOME *******----------------------";
-    cout<<"----------------------AIRPORT MANAGEMENT SYSTEM----------------------";
-    cout<<"WHO ARE YOU ??\n";
-    cout<<"1. STAFF\t\t2. PASSENGER\n";
-    cin>>opt1;
-    system("cls");
-
-    //screen 2
-    string login, password;
-    
-    if(opt1 == 1)
+    void setter()
     {
-        cout<<"Please enter your login id and password : \nID : ";
-        cin>>login;
-        cout<<"PASSWORD : ";
+        cout<<"Enter the details of Passenger :\n ";
+        cout<<" Login Id : ";
+        cin>>id;
+        cout<<" Password : ";
         cin>>password;
-        st.search_staff(id,s_obj);
-        //FILE HANDLING : 1. CHECK WHETHER THE PERSON EXIST 2. TO SHOW HIS/HER DETAILS ON SCREEN AFTER LOADING FROM FILE
-        while(opt2!=0)
-        {   
-            cout<<"Which task do you wish to perform?\n";
-            cout<<"1. Add details of a flight\n";
-            cout<<"2. Update Travel details of a flight\n";
-            cout<<"3. View all passengers\n";
-            cout<<"4. To search for a passenger\n";
-            cout<<"5. Update Arrival/Departure details of Flight\n";
-            cout<<"6. View details of all the flights\n";
-            cout<<"0. exit\n";
-            cin>>opt2;
-            string p_name,no,from,to;
-            date a_d,d_d;
-            timing a_t,d_t;
-            switch (opt2)
-            {
-            case 1:
-                cout<<"Enter the p_name of the flight : ";
-                cin>>p_name;
-                cout<<"Enter the no of flight : ";
-                cin>>no;
-                cout<<"Enter the arrival date (dd mm yyyy): ";
-                cin>>a_d.day>>a_d.month>>a_d.year;
-                cout<<"Enter the arrival time (hh mm ss): ";
-                cin>>a_t.hours>>a_t.minutes>>a_t.seconds;
-                cout<<"Enter the departure date (dd mm yyyy): ";
-                cin>>d_d.day>>d_d.month>>d_d.year;
-                cout<<"Enter the departure time (hh mm ss): ";
-                cin>>d_t.hours>>d_t.minutes>>d_t.seconds;
-                cout<<"Flight is travelling from ?? ";
-                cin>>from;
-                cout<<"Flight is going to ?? ";
-                cin>>to;
-                break;
+        cout<<" Name : ";
+        cin>>s_name;
+        cout<<" Job : ";
+        cin>>job;
+        s_count++;
+    }
 
-            case 2:
-                fly.search_flight(f_obj,2);
-                break;
-
-            case 3:
-                cout<<"Do you want to 1.view passengers of all flights or 2.passengers of a specific flight ??";
-                cin>>opt3;
-                if(opt3 == 1)
-                {
-                    pass.display_all_passenger(p_obj);
-                }
-                else if(opt3 == 2)
-                {
-                    cout<<"Enter the p_name of the flight whose passengers you want to view:\n";
-                    cout<<"1. SpiceJet : from Delhi to Dhaka\n";
-                    cout<<"2. SpiceJet : from Delhi to Sydney\n";
-                    cout<<"3. IndiGo : from Delhi to Kathmandu\n";
-                    cout<<"4. IndiGo : from Delhi to Doha\n";
-                    cout<<"5. Vistara : from Delhi to Lucknow\n";
-                    cout<<"6. Vistara : from Delhi to Bombay\n";
-                    cin>>opt4;
-                    switch(opt4)
-                    {
-                        case 1:
-                            pass.display_all_passenger_of_flight(p_obj,"SpiceJet","Delhi","Dhaka");
-                            break;
-                        case 2:
-                            pass.display_all_passenger_of_flight(p_obj,"SpiceJet","Delhi","Sydney");
-                            break;
-                        case 3:
-                            pass.display_all_passenger_of_flight(p_obj,"IndiGo","Delhi","Kathmandu");
-                            break;
-                        case 4:
-                            pass.display_all_passenger_of_flight(p_obj,"IndiGo","Delhi","Doha");
-                            break;
-                        case 5:
-                            pass.display_all_passenger_of_flight(p_obj,"Vistara","Delhi","Lucknow");
-                            break;
-                        case 6:
-                            pass.display_all_passenger_of_flight(p_obj,"Vistara","Delhi","Bombay");
-                            break;
-                        default:
-                            cout<<"Invalid Input!!\n";
-                    }
-                }
-            case 4:
-                cout<<"Enter the id of passenger whom you want to find : ";
-                cin>>id;
-                pass.search_passenger(id,p_obj);
-            
-            case 5:
-                fly.search_flight(f_obj,1);
-            
-            case 6:
-                fly.display_all_flight(f_obj);
-            
-            default:
-                cout<<"Invalid Input!!\n";
-                break;
+    void search_staff(vector <Staff> obj)
+    {
+        //Take data from the file
+        string i,p;
+        int flag=0;
+        cout<<"Enter the following :\n";
+        cout<<"Id : ";
+        cin>>i;
+        cout<<"Password : ";
+        cin>>p;
+        for(int j = 0;j<s_count;j++)
+        {
+            if(obj[j].id == i && obj[j].password == p)
+            { 
+                obj[j].display(obj[j]); 
             }
-            Flight obj(no,d_d.day,d_d.month,d_d.year,d_t.hours,d_t.minutes,d_t.seconds,a_d.day,a_d.month,a_d.year,a_t.hours,a_t.minutes,a_t.seconds,from,to,p_name);
-            f_obj.push_back(obj);
+            else
+            {
+                flag = 1;
+            } 
+        }
+        if(flag == 1)
+        {
+            throw "Staff not found !!\n";
         }
     }
 
-    else if(opt1 == 2)
+    void display(Staff &st)
     {
-        cout<<"Please enter your login id and password : \nID : ";
-        cin>>login;
-        cout<<"PASSWORD : ";
-        cin>>password;
-        pass.search_passenger(id,p_obj);
-        //FILE HANDLING : 1. CHECK WHETHER THE PERSON EXIST 2. TO SHOW HIS/HER DETAILS ON SCREEN AFTER LOADING FROM FILE
-    while (opt2 != 0)
-        {
-            cout<<"Which task do you wish to perform ??\n";
-            cout<<"1. Book ticket\n";
-            cout<<"2. View your ticket\n";
-            cout<<"3. Avail the services\n";
-            cout<<"4. Add Baggage and check price\n";
-            cout<<"5. Rate the flight\n";
-            cin>>opt2;
-            switch(opt2)
-            {
-                case 1:
-                    
-                    break;
-                case 2:
-                    
-                    break;
-                case 3:
-                    
-                    break;
-                case 4:
-                    
-                    break;
-                case 5:
+        cout<<"Name : "<<st.s_name<<endl;
+        cout<<"Job : "<<st.job<<endl;
+    }
+};
 
-                    break;
+int Staff :: s_count = 0;
+
+int main()
+{
+    try
+    {    
+
+        int opt1,opt2=-1,opt3,opt4;
+        char yesno;
+
+        //class objects
+        Staff st;
+        Passenger pass;
+        Flight fly;
+        ticket tick;
+
+        //class vector objects
+        vector <Staff> s_obj;
+        vector <Passenger> p_obj;
+        vector <Flight> f_obj;
+
+        //screen 1
+        cout<<"----------------------*******  WELCOME *******----------------------"<<endl;
+        cout<<"----------------------AIRPORT MANAGEMENT SYSTEM----------------------"<<endl;
+        cout<<"WHO ARE YOU ??\n";
+        cout<<"1. STAFF\t\t2. PASSENGER\n";
+        cin>>opt1;
+
+        //screen 3
+        if(opt1 == 1)
+        {
+            //User Authentication
+            cout<<"Are you a new user ?(Y/N) ";
+            cin>>yesno;
+            if(yesno == 'Y')
+            {
+                st.setter();
+                s_obj.push_back(st);
+                cout<<"Now Login : \n";
+            }
+            else if(yesno = 'N')
+            {
+                cout<<"Login : \n";
+            }
+            else
+            {
+                throw "Invalid input !!\n";
+            }
+            st.search_staff(s_obj);
+
+            cout<<"What task do you wish to perform??\n";
+            cout<<"1. Add details of a flight\n";
+            cout<<"2. View all passengers\n";
+            cout<<"3. To search for a passenger\n";
+            cout<<"4. Update Arrival/Departure details of Flight\n";
+            cout<<"5. View details of all the flights\n";
+            cout<<"6. Add deatils of staff\n";
+            cout<<"0. exit\n";
+            cin>>opt2;
+            while(opt2 != 0)
+            {    
+                
+                switch(opt2)
+                {
+                    case 1:
+                        fly.setter();
+                        f_obj.push_back(fly);
+                        break;
+                    case 2:
+                        cout<<"Do you want to 1.view passengers all flights or 2.passengers of specific flight ? ";
+                        cin>>opt3;
+                        if(opt3 == 1)
+                        {
+                            pass.display_all_passenger(p_obj);
+                        }
+                        else if(opt3 == 2)
+                        {   
+                            fly.display_all_flight_options();
+                            cin>>opt4;
+                            switch(opt4)
+                            {
+                                case 1:
+                                    pass.display_all_passenger_of_flight(p_obj,"SpiceJet","Delhi","Dhaka");
+                                    break;
+                                case 2:
+                                    pass.display_all_passenger_of_flight(p_obj,"SpiceJet","Delhi","Sydney");
+                                    break;
+                                case 3:
+                                    pass.display_all_passenger_of_flight(p_obj,"IndiGo","Delhi","Kathmandu");
+                                    break;
+                                case 4:
+                                    pass.display_all_passenger_of_flight(p_obj,"IndiGo","Delhi","Doha");
+                                    break;
+                                case 5:
+                                    pass.display_all_passenger_of_flight(p_obj,"Vistara","Delhi","Lucknow");
+                                    break;
+                                case 6:
+                                    pass.display_all_passenger_of_flight(p_obj,"Vistara","Delhi","Bombay");
+                                    break;
+                                default:
+                                    throw "Invalid Input!!\n";
+
+                            }
+                        }
+                        else
+                        {
+                            throw "Invalid input\n";
+                        }
+                        break;
+                    case 3:
+                        pass.search_pass(p_obj);
+                        break;
+                    case 4:
+                        break;
+                    case 5 :
+                        fly.display_all_flight(f_obj);
+                        break;
+                    case 6:
+                        st.setter();
+                        s_obj.push_back(st);
+                        break;
+                }
+                cout<<"What task do you wish to perform??\n";
+                cout<<"1. Add details of a flight\n";
+                cout<<"2. View all passengers\n";
+                cout<<"3. To search for a passenger\n";
+                cout<<"4. Update Arrival/Departure details of Flight\n";
+                cout<<"5. View details of all the flights\n";
+                cout<<"0. exit\n";
+                cin>>opt2;
             }
         }
-        
+        else if(opt1 == 2)
+        {
+            //User Authentication
+            // cout<<"Are you a new user ?(Y/N) ";
+            // cin>>yesno;
+            // if(yesno == 'Y')
+            // {
+            //     pass.setter();
+            //     p_obj.push_back(pass);
+            //     cout<<"Now Login : \n";
+            // }
+            // else if(yesno = 'N')
+            // {
+            //     cout<<"Login : \n";
+            // }
+            // else
+            // {
+            //     throw "Invalid input !!\n";
+            // }
+            Passenger *passPtr = pass.search_pass(p_obj);
+            string f_no;
+            Flight* flyObj;
+            while(opt2 != 0)
+            {    
+                cout<<"Which task do you wish to perform ??\n";
+                cout<<"1. Book ticket\n";
+                cout<<"2. View your ticket\n";
+                cout<<"3. Avail the services\n";
+                cout<<"4. Add Baggage and check price\n";
+                cout<<"5. Rate the flight\n";
+                cout<<"0. exit\n";
+                cin>>opt2;
+                switch(opt2)
+                {
+                    case 1:
+                        fly.display_all_flight_options();
+                        cin>>opt4;
+                        switch(opt4)
+                        {
+                            case 1:
+                                pass.choose_flight(passPtr,"SpiceJet","Delhi","Dhaka","SJ1");
+                                f_no = "SJ1";
+                                break;
+                            case 2:
+                                pass.choose_flight(passPtr,"SpiceJet","Delhi","Sydney","SJ2");
+                                f_no = "SJ2";
+                                break;
+                            case 3:
+                                pass.choose_flight(passPtr,"IndiGo","Delhi","Kathmandu","IG1");
+                                f_no = "IG1";
+                                break;
+                            case 4:
+                                pass.choose_flight(passPtr,"IndiGo","Delhi","Doha","IG2");
+                                f_no = "IG2";
+                                break;
+                            case 5:
+                                pass.choose_flight(passPtr,"Vistara","Delhi","Lucknow","VS1");
+                                f_no = "VS1";
+                                break;
+                            case 6:
+                                pass.choose_flight(passPtr,"Vistara","Delhi","Bombay","VS2");
+                                f_no = "VS2";
+                                break;
+                            default:
+                                throw "Invalid Input!!\n";
+                        }   
+                        flyObj = fly.search_fly(f_obj,f_no); 
+                        tick.book_ticket(flyObj);
+                        break;
+                    case 2:
+
+                        break;
+                    case 3:
+
+                        break;
+                    case 4:
+
+                        break;
+                    case 5:
+
+                        break;
+                }
+            }
+        }
+        else
+        {
+            throw "Invalid input!!\n";
+        }
+    }
+    catch(const char *s)
+    {
+        cout<<s;
     }
 }
